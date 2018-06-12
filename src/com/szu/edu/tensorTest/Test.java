@@ -278,19 +278,12 @@ public class Test {
 		//String reg="([\\s\\S]*?)\\(([\\s\\S]*?)\\[([\\s\\S]*?)\\],\\[([\\s\\S]*?)\\]\\)";
 		//String str = "slice(x,[1,2,3],[0,0,0])";
 		//ParseTensorUtil.getSliceMatchers(str, reg);
-		double k=0D;
-		double j=0D;
-		double i=0D;
-		k=(j+13)/27;
-		System.out.println(k);
-		while(k<10.0D)
+		String str = "a+b*c";
+		String[] strs=str.split("[+]");
+		for(int i=0;i<strs.length;i++)
 		{
-			k=(k+1.2D);
-			i=3*k-1.0D;
+			System.out.println(strs[i]);
 		}
-		System.out.println(k);
-		System.out.println(i);
-		
 	}
 	
 	@org.junit.Test
@@ -310,6 +303,215 @@ public class Test {
 			if(expression.equals("quit"))
 			{
 				break;
+			}else if(expression.indexOf("+")!=-1&&expression.indexOf(".")!=-1)
+			{
+				String[] strs=expression.split("=");
+				String variableName=strs[0];
+				String variableValue=strs[1];
+				String[] values=variableValue.split("\\+");
+				if(values[0].indexOf(".")==-1&&values[1].indexOf(".")==-1)
+				{
+					String exp=variableName+"="+values[0]+"+"+values[1];
+					expressions.add(exp);
+					for(int i=2;i<values.length;i++)
+					{
+						if(values[i].indexOf(".")==-1)
+						{
+							exp=variableName+"="+variableName+"+"+values[i];
+							expressions.add(exp);
+						}else 
+						{
+							String[] multiValue=values[i].split("\\.");
+							String tensorMultiResult = "multiResult";
+							String expMulti=tensorMultiResult+"="+multiValue[0]+"."+multiValue[1];
+							expressions.add(expMulti);
+							for(int j=2;j<multiValue.length;j++)
+							{
+								expMulti=tensorMultiResult+"="+tensorMultiResult+"."+multiValue[j];
+								expressions.add(expMulti);
+							}
+							expMulti=variableName+"="+variableName+"+"+tensorMultiResult;
+							expressions.add(expMulti);
+						}
+						
+					}
+				}else if(values[0].indexOf(".")!=-1)
+				{
+					String[] multiValue=values[0].split("\\.");
+					String exp=variableName+"="+multiValue[0]+"."+multiValue[1];
+					expressions.add(exp);
+					if(values[1].indexOf(".")!=-1)
+					{
+						String resultTwo = "resultTwo";
+						String[] multiValue2=values[1].split("\\.");
+						exp=resultTwo+"="+multiValue2[0]+"."+multiValue2[1];
+						expressions.add(exp);
+						exp=variableName+"="+variableName+"+"+resultTwo;
+						expressions.add(exp);
+					}else 
+					{
+						exp=variableName+"="+variableName+"+"+values[1];
+						expressions.add(exp);	
+					}
+					for(int i=2;i<values.length;i++)
+					{
+						if(values[i].indexOf(".")==-1)
+						{
+							exp=variableName+"="+variableName+"+"+values[i];
+							expressions.add(exp);
+						}else 
+						{
+							String[] multiValues=values[i].split("\\.");
+							String tensorMultiResult = "multiResult";
+							String expMulti=tensorMultiResult+"="+multiValues[0]+"."+multiValues[1];
+							expressions.add(expMulti);
+							for(int j=2;j<multiValues.length;j++)
+							{
+								expMulti=tensorMultiResult+"="+tensorMultiResult+"."+multiValues[j];
+								expressions.add(expMulti);
+							}
+							expMulti=variableName+"="+variableName+"+"+tensorMultiResult;
+							expressions.add(expMulti);
+						}
+						
+					}
+				}else
+				{
+					String resultTwo = "resultTwo";
+					String[] multiValue2=values[1].split("\\.");
+					String exp=resultTwo+"="+multiValue2[0]+"."+multiValue2[1];
+					expressions.add(exp);
+					exp=variableName+"="+values[0]+"+"+resultTwo;
+					expressions.add(exp);
+					for(int i=2;i<values.length;i++)
+					{
+						if(values[i].indexOf(".")==-1)
+						{
+							exp=variableName+"="+variableName+"+"+values[i];
+							expressions.add(exp);
+						}else 
+						{
+							String[] multiValues=values[i].split("\\.");
+							String tensorMultiResult = "multiResult";
+							String expMulti=tensorMultiResult+"="+multiValues[0]+"."+multiValues[1];
+							expressions.add(expMulti);
+							for(int j=2;j<multiValues.length;j++)
+							{
+								expMulti=tensorMultiResult+"="+tensorMultiResult+"."+multiValues[j];
+								expressions.add(expMulti);
+							}
+							expMulti=variableName+"="+variableName+"+"+tensorMultiResult;
+							expressions.add(expMulti);
+						}
+						
+					}
+				}
+				
+			}
+			else if(expression.indexOf("+")!=-1)
+			{
+				String[] strs=expression.split("=");
+				String variableName=strs[0];
+				String variableValue=strs[1];
+				String[] values=variableValue.split("\\+");
+				if(values[0].indexOf("*")==-1&&values[1].indexOf("*")==-1)
+				{
+					String exp=variableName+"="+values[0]+"+"+values[1];
+					expressions.add(exp);
+					for(int i=2;i<values.length;i++)
+					{
+						if(values[i].indexOf("*")==-1)
+						{
+							exp=variableName+"="+variableName+"+"+values[i];
+							expressions.add(exp);
+						}else 
+						{
+							String[] multiValue=values[i].split("\\*");
+							String tensorMultiResult = "multiResult";
+							String expMulti=tensorMultiResult+"="+multiValue[0]+"*"+multiValue[1];
+							expressions.add(expMulti);
+							for(int j=2;j<multiValue.length;j++)
+							{
+								expMulti=tensorMultiResult+"="+tensorMultiResult+"*"+multiValue[j];
+								expressions.add(expMulti);
+							}
+							expMulti=variableName+"="+variableName+"+"+tensorMultiResult;
+							expressions.add(expMulti);
+						}
+						
+					}
+				}else if(values[0].indexOf("*")!=-1)
+				{
+					String[] multiValue=values[0].split("\\*");
+					String exp=variableName+"="+multiValue[0]+"*"+multiValue[1];
+					expressions.add(exp);
+					if(values[1].indexOf("*")!=-1)
+					{
+						String resultTwo = "resultTwo";
+						String[] multiValue2=values[1].split("\\*");
+						exp=resultTwo+"="+multiValue2[0]+"*"+multiValue2[1];
+						expressions.add(exp);
+						exp=variableName+"="+variableName+"+"+resultTwo;
+						expressions.add(exp);
+					}else 
+					{
+						exp=variableName+"="+variableName+"+"+values[1];
+						expressions.add(exp);	
+					}
+					for(int i=2;i<values.length;i++)
+					{
+						if(values[i].indexOf("*")==-1)
+						{
+							exp=variableName+"="+variableName+"+"+values[i];
+							expressions.add(exp);
+						}else 
+						{
+							String[] multiValues=values[i].split("\\*");
+							String tensorMultiResult = "multiResult";
+							String expMulti=tensorMultiResult+"="+multiValues[0]+"*"+multiValues[1];
+							expressions.add(expMulti);
+							for(int j=2;j<multiValues.length;j++)
+							{
+								expMulti=tensorMultiResult+"="+tensorMultiResult+"*"+multiValues[j];
+								expressions.add(expMulti);
+							}
+							expMulti=variableName+"="+variableName+"+"+tensorMultiResult;
+							expressions.add(expMulti);
+						}
+						
+					}
+				}else
+				{
+					String resultTwo = "resultTwo";
+					String[] multiValue2=values[1].split("\\*");
+					String exp=resultTwo+"="+multiValue2[0]+"*"+multiValue2[1];
+					expressions.add(exp);
+					exp=variableName+"="+values[0]+"+"+resultTwo;
+					expressions.add(exp);
+					for(int i=2;i<values.length;i++)
+					{
+						if(values[i].indexOf("*")==-1)
+						{
+							exp=variableName+"="+variableName+"+"+values[i];
+							expressions.add(exp);
+						}else 
+						{
+							String[] multiValues=values[i].split("\\*");
+							String tensorMultiResult = "multiResult";
+							String expMulti=tensorMultiResult+"="+multiValues[0]+"*"+multiValues[1];
+							expressions.add(expMulti);
+							for(int j=2;j<multiValues.length;j++)
+							{
+								expMulti=tensorMultiResult+"="+tensorMultiResult+"*"+multiValues[j];
+								expressions.add(expMulti);
+							}
+							expMulti=variableName+"="+variableName+"+"+tensorMultiResult;
+							expressions.add(expMulti);
+						}
+						
+					}
+				}
+				
 			}else
 			{
 				expressions.add(expression);
