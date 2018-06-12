@@ -250,6 +250,12 @@ public class ParseTensorUtil {
 								expressionMap.put(i+1, expressionStatus);
 								tensorValue.put(variableName, tensor);
 							}
+						}else if(argLeft instanceof Integer)
+						{
+							Integer copyLeft=(Integer) argLeft;
+							Integer copyRight=(Integer) argRight;
+							Integer resultNum = copyLeft+copyRight;
+							tensorValue.put(variableName, resultNum);
 						}
 					}
 				}else if(variableValue.indexOf(".")!=-1)
@@ -332,6 +338,12 @@ public class ParseTensorUtil {
 								expressionMap.put(i+1, expressionStatus);
 								tensorValue.put(variableName, tensor);
 							}
+						}else if(argLeft instanceof Integer)
+						{
+							falseReason="名为"+argLeftName+"的变量和名为"+argRightName+"的变量是整型不能进行点乘\r\n"
+									+"出错的语句："+expression;
+							saveFalseStatusAndResult(expressionMap, fasleReasonList, i,falseReason);
+							continue;
 						}
 					}
 				}else if(variableValue.indexOf("*")!=-1)
@@ -399,6 +411,12 @@ public class ParseTensorUtil {
 								expressionMap.put(i+1, expressionStatus);
 								tensorValue.put(variableName, tensor);
 							}
+						}else if(argLeft instanceof Integer)
+						{
+							Integer copyLeft=(Integer) argLeft;
+							Integer copyRight=(Integer) argRight;
+							Integer resultNum = copyLeft*copyRight;
+							tensorValue.put(variableName, resultNum);
 						}
 					}
 				}else if(variableValue.indexOf("reshape")!=-1)
